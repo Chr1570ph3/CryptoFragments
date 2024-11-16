@@ -35,6 +35,8 @@ The project is organized into modules, ensuring a clear separation of responsibi
 - Key functions:
   - `save_to_file(filename, data)`
   - `load_from_file(filename)`
+  - `export_to_qrcode`
+  - `decode_qrcode`
 
 ## Program Flow
 
@@ -52,3 +54,6 @@ The project is organized into modules, ensuring a clear separation of responsibi
 - `shamir-mnemonic`: Implements Shamir's Secret Sharing.
 - `cryptography`: Provides symmetric encryption and decryption.
 - `unittest`: Unit testing for core functions.
+- `pillow` : Used to open and handle QR code image files for decoding. 
+- `pyzbar` : Used to extract encoded data from QR code images.
+- `qrcode` : Used to create QR code images that store encrypted shares and keys.

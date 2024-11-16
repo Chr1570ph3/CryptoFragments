@@ -14,6 +14,9 @@ def create_shares(seed_phrase, total_shares, threshold):
     # Encode la seed phrase en bytes
     seed_phrase_bytes = seed_phrase.encode('utf-8')
 
+    if len(seed_phrase_bytes) % 2 != 0:
+        seed_phrase_bytes += b" "  # Ajoute un byte de remplissage
+
     # Génère les parts
     shares = generate_mnemonics(1, [(threshold, total_shares)], seed_phrase_bytes)[0]
     return shares

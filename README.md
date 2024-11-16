@@ -11,6 +11,7 @@ CryptoFragments is a Python-based tool that securely fragments, encrypts, and ma
 - **Encryption**: Encrypt each share using AES encryption for enhanced security.
 - **Automatic File Management**: Automatically detect and manage share and key files.
 - **Dynamic Threshold Detection**: Extract the required threshold dynamically from the share metadata.
+- **QR Code Support**: Export and decode shares and keys as QR codes for easier distribution and recovery.
 - **Error Handling**: Comprehensive handling of file, decryption, and recovery errors.
 
 ---
@@ -24,7 +25,8 @@ CryptoFragments is a Python-based tool that securely fragments, encrypts, and ma
    - Each share is encrypted with a unique key to ensure secure storage.
 
 3. **File Management**:
-   - Encrypted shares and their keys are saved as files (`share_*.enc` and `key_*.key`).
+    - Encrypted shares and their keys are saved as files (`share_*.enc` and `key_*.key`) or exported as QR codes.
+
 
 4. **Recovery**:
    - The original seed phrase is recovered using a minimum threshold of decrypted shares.
@@ -62,18 +64,24 @@ CryptoFragments is a Python-based tool that securely fragments, encrypts, and ma
 ### Fragment and Encrypt a Seed Phrase
 Run the `basic_usage.py` script to fragment and encrypt a seed phrase:
 ```bash
-python examples/basic_usage.py
+python examples/basic_usage.py --seed "your seed phrase" --output-dir output --export-qrcode
 ```
+```bash
+python main.py --seed-file seed.txt --export-qrcode
+```
+
 
 This will:
 - Split your seed phrase into shares.
 - Encrypt each share and save it as `share_*.enc`.
 - Save the corresponding encryption keys as `key_*.key`.
+- Optionally export the shares and keys as QR codes (share_*.png and key_*.png).
+
 
 ## Recover a Seed Phrase
 Run the `recovery_test.py` script to recover a seed phrase:
 ```bash
-python examples/recovery_test.py
+python examples/recovery_test.py --directory output --threshold 3
 ```
 
 This will:
@@ -104,21 +112,27 @@ CryptoFragments/
 │   │   ├── overview.md     # Project overview (English)
 │   │   ├── security.md     # Security practices (English)
 │   ├── fr/
+│   │   ├── architecture.md # Technical architecture (French)
 │   │   ├── securite.md     # Security practices (French)
 │   │   ├── vue_generale.md # Project overview (French)
 ├── .gitignore
 ├── requirements.txt        # Python dependencies
 ├── README.md               # Project documentation (en)
-├── README.md               # Project documentation (fr)
+├── README_fr.md               # Project documentation (fr)
 ```
 
 ---
 ## Best Practices
 1. Run Offline: Always run the program on an offline, secure computer to minimize exposure.
-1. Secure Storage: Store share_*.enc and key_*.key files in separate, secure locations.
+1. Store `share_*.enc`/`share_*.png` and `key_*.key`/key_*.png` files in separate, secure locations.
 1. Redundant Backups: Maintain multiple backups of your shares and keys.
 1. Threshold Awareness: Ensure you always have the minimum number of shares (threshold) required for recovery.
 1. Test Recovery: Regularly test the recovery process with dummy data to ensure everything works as expected.
+
+## Libraries Used
+`pillow`: Handles image processing for opening and saving QR code images.
+`pyzbar`: Decodes QR codes from image files.
+`qrcode`: Generates QR code images for encrypted shares and keys.
 
 ## Contributing
 Contributions are welcome! Please follow these steps to contribute:
@@ -141,4 +155,11 @@ This project is licensed under the MIT License. See the [LICENSE](https://openso
 For questions or feedback, please contact:
 
 GitHub: [Chr1570ph3](https://github.com/Chr1570ph3/)
+
+--- 
+Let me know if you’d like further adjustments! 😊
+
+
+
+
 

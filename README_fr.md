@@ -12,6 +12,7 @@ CryptoFragments est un outil basé sur Python qui permet de fragmenter, chiffrer
 - **Chiffrement** : Chiffrez chaque part avec AES pour une sécurité renforcée.
 - **Gestion Automatique des Fichiers** : Détectez et gérez automatiquement les fichiers de parts et de clés.
 - **Détection Dynamique du Seuil** : Extrayez le seuil requis dynamiquement à partir des métadonnées des parts.
+- **Support des QR Codes** : Exportez et décodez les parts et les clés au format QR code pour une distribution et une récupération simplifiées.
 - **Gestion des Erreurs** : Une gestion complète des erreurs liées aux fichiers, au déchiffrement et à la récupération.
 
 ---
@@ -25,7 +26,7 @@ CryptoFragments est un outil basé sur Python qui permet de fragmenter, chiffrer
    - Chaque part est chiffrée avec une clé unique pour garantir un stockage sécurisé.
 
 3. **Gestion des Fichiers** :
-   - Les parts chiffrées et leurs clés sont sauvegardées sous forme de fichiers (`share_*.enc` et `key_*.key`).
+   - Les parts chiffrées et leurs clés sont sauvegardées sous forme de fichiers (`share_*.enc` et `key_*.key`) ou de QR codes.
 
 4. **Récupération** :
    - La phrase de récupération originale est reconstituée à l'aide d'un nombre minimal de parts déchiffrées.
@@ -64,7 +65,10 @@ CryptoFragments est un outil basé sur Python qui permet de fragmenter, chiffrer
 Exécutez le script `basic_usage.py` pour fragmenter et chiffrer une phrase de récupération :
 
 ```bash
-python examples/basic_usage.py
+python examples/basic_usage.py --seed "your seed phrase" --output-dir output --export-qrcode
+```
+```bash
+python main.py --seed-file seed.txt --export-qrcode
 ```
 
 Cela permettra de :
@@ -72,11 +76,12 @@ Cela permettra de :
 - Diviser votre phrase en plusieurs parts.
 - Chiffrer chaque part et les sauvegarder sous forme de fichiers `share_*.enc`.
 - Sauvegarder les clés de chiffrement correspondantes sous forme de fichiers `key_*.key`.
+- Optionnel sauvegarder les parts et clés de chiffrement correspondantes sous forme de QR code  (`share_*.png` `key_*.png`).
 
 ## Reconstituer une Phrase de Récupération
 Exécutez le script `recovery_test.py` pour reconstituer une phrase de récupération :
 ```bash
-python examples/recovery_test.py
+python examples/recovery_test.py --directory output --threshold 3
 ```
 
 Cela permettra de :
@@ -108,6 +113,7 @@ CryptoFragments/
 │   │   ├── overview.md     # Vue générale du projet (en anglais)
 │   │   ├── security.md     # Pratiques de sécurité (en anglais)
 │   ├── fr/
+│   │   ├── architecture.md # Architecture technique (en français)
 │   │   ├── securite.md     # Pratiques de sécurité (en français)
 │   │   ├── vue_generale.md # Vue générale du projet (en français)
 ├── .gitignore
@@ -119,10 +125,15 @@ CryptoFragments/
 ---
 ## Bonnes Pratiques
 1. Exécutez Hors Ligne : Exécutez toujours le programme sur un ordinateur hors ligne et sécurisé pour minimiser les risques.
-1. Stockage Sécurisé : Stockez les fichiers `share_*.enc` et `key_*.key` dans des emplacements séparés et sécurisés.
+1. Stockage Sécurisé : Stockez les fichiers `share_*.enc`/`share_*.png` et `key_*.key`/key_*.png` dans des emplacements séparés et sécurisés.
 1. Sauvegardes Redondantes : Conservez plusieurs sauvegardes de vos parts et de vos clés.
-1. Conscience du Seuil : Assurez-vous de toujours avoir le nombre minimal de parts requis (`seuil`) pour la récupération.
+1. Conscience du Seuil : Assurez-vous de toujours avoir le nombre minimal de parts requis (`seuil`/`threshold`) pour la récupération.
 1. Testez la Récupération : Testez régulièrement le processus de récupération avec des données fictives pour garantir que tout fonctionne comme prévu.
+
+## Libraries Used
+`pillow`: Gère le traitement des images pour ouvrir et sauvegarder les images de QR codes.
+`pyzbar`: Décode les QR codes à partir des fichiers image.
+`qrcode`: Génère des images de QR codes pour les parts et clés chiffrées.
 
 ## Contribution
 Les contributions sont les bienvenues ! Suivez ces étapes pour contribuer :
@@ -146,3 +157,5 @@ Ce projet est sous licence MIT. Consultez le fichier [LICENSE](https://opensourc
 Pour toute question ou retour, veuillez contacter :
 GitHub: [Chr1570ph3](https://github.com/Chr1570ph3/)
 
+--- 
+Faites-moi savoir si vous souhaitez d'autres ajouts/améliorations ! 😊

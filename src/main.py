@@ -1,43 +1,56 @@
-from src.share import create_shares, recover_secret
+import os
+import argparse
+from src.share import create_shares
 from src.encrypt import encrypt_share
-from src.decrypt import decrypt_share
-
-from src.utils import save_to_file, load_from_file
+from src.utils import save_to_file, export_to_qrcode  
 
 def main():
-    seed_phrase = "your secret seed phrase".encode('utf-8')
+    parser = argparse.ArgumentParser(description="CryptoFragments: Fragment and secure your seed phrase.")
+    parser.add_argument("--seed", help="Seed phrase to process (as a parameter).", required=False)
+    parser.add_argument("--seed-file", help="Path to a .txt file containing the seed phrase.", required=False)
+    parser.add_argument("--output-dir", help="Directory to save shares, keys, and QR codes.", default="output")
+    parser.add_argument("--export-qrcode", help="Export shares and keys as QR codes.", action="store_true")
 
-    # Vérifiez et ajustez la longueur des bytes
-    if len(seed_phrase) % 2 != 0:
-        seed_phrase += b" "  # Ajoute un byte de remplissage
+    args = parser.parse_args()
 
+    # Load the seed phrase
+    if args.seed:
+        seed_phrase = args.seed
+    elif args.seed_file:
+        with open(args.seed_file, "r") as f:
+            seed_phrase = f.read().strip()
+    else:
+        print("Error: You must provide a seed phrase either as a parameter or via a .txt file.")
+        return
+
+    # Parameters for Shamir's Secret Sharing
     total_shares = 5
     threshold = 3
 
-    # Étape 1 : Génération des parts
+    # Create shares
     shares = create_shares(seed_phrase, total_shares, threshold)
-    print("Shares generated.")
 
-    # Étape 2 : Chiffrement des parts et stockage
-    encrypted_shares = []
+    # Output directory
+    output_dir = args.output_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Encrypt and save each share
     for i, share in enumerate(shares):
         encrypted_share, key = encrypt_share(share.encode('utf-8'))
-        encrypted_shares.append((encrypted_share, key))
-        save_to_file(f"share_{i + 1}.enc", encrypted_share)
-        save_to_file(f"key_{i + 1}.key", key)
-    print("Shares encrypted and saved to files.")
+        
+        # Save encrypted share and key to files
+        share_filename = f"share_{i + 1}.enc"
+        key_filename = f"key_{i + 1}.key"
+        save_to_file(os.path.join(output_dir, share_filename), encrypted_share)
+        save_to_file(os.path.join(output_dir, key_filename), key)
+        print(f"Encrypted Share {i + 1} and Key saved.")
 
-    # Étape 3 : Simulation de récupération
-    recovered_shares = []
-    for i in range(threshold):
-        encrypted_share = load_from_file(f"share_{i + 1}.enc")
-        key = load_from_file(f"key_{i + 1}.key")
-        decrypted_share = decrypt_share(encrypted_share, key).decode('utf-8')
-        recovered_shares.append(decrypted_share)
+        # Export QR codes if the option is enabled
+        if args.export_qrcode:
+            export_to_qrcode(encrypted_share.decode('latin-1'), f"share_{i + 1}.png", output_dir)
+            export_to_qrcode(key.decode('latin-1'), f"key_{i + 1}.png", output_dir)
 
-    # Étape 4 : Reconstitution de la seed phrase
-    recovered_seed = recover_secret(recovered_shares)
-    print("Recovered Seed Phrase:", recovered_seed)
+    print("Process completed successfully.")
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,8 @@
 cffi==1.17.1
+colorama==0.4.6
 cryptography==43.0.3
+pillow==11.0.0
 pycparser==2.22
+pyzbar==0.1.9
+qrcode==8.0
 shamir-mnemonic==0.3.0
